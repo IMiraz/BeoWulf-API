@@ -19,7 +19,12 @@ passwordHash:{
 confirmed:{
     type:Boolean,
     default:false
+},
+confirmationToken:{
+    type:String,
+    default:""
 }
+
 
 }, {timestamps:true});
 
@@ -30,6 +35,10 @@ schema.methods.isValidPassword = function isValidPassword(password) {
 
 schema.methods.setPassword = function setPassword(password) {
     this.passwordHash = bcrypt.hashSync(password, 10);
+  };
+
+  schema.methods.seConfirmationToken = function confirmationToken() {
+    this.setConfirmationToken =this.genarateJWT();
   };
 
 schema.methods.genarateJWT = function genarateJWT() {
