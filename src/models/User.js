@@ -37,8 +37,12 @@ schema.methods.setPassword = function setPassword(password) {
     this.passwordHash = bcrypt.hashSync(password, 10);
   };
 
-  schema.methods.seConfirmationToken = function confirmationToken() {
-    this.setConfirmationToken =this.genarateJWT();
+  schema.methods.seConfirmationToken = function seConfirmationToken() {
+    this.ConfirmationToken =this.genarateJWT();
+  };
+
+  schema.methods.generateConfirmationUrl = function generateConfirmationUrl() {
+    return `${process.env.HOST}/confirmation/${this.ConfirmationToken}`;
   };
 
 schema.methods.genarateJWT = function genarateJWT() {
