@@ -1,5 +1,6 @@
 import express from 'express';
 import User from '../models/User';
+import {sendResetPasswordEmail} from '../mailer/mailer'
 
 const router = express.Router();
 
@@ -17,5 +18,32 @@ res.status(400).json({errors:{global:"Invalid Credentials"}});
 }
 })
 });
+
+router.post("/confirmation", (req, res) => {
+    const token = req.body.token;
+    User.findOneAndUpdate(
+      { confirmationToken: token },
+      { confirmationToken: "", confirmed: true },
+      { new: true }
+    ).then(
+      user =>
+        user ? res.json({ user: user.toAuthJSON() }) : res.status(400).json({})
+    );
+  });
+
+  router.post("/reset_password_request", (req, res) => {
+
+    User.findOne({ email:req.body.email})
+    .then(user => {
+        if(user) {
+            sendResetPasswordEmail(user);
+            res.json({});
+        }
+        else {
+            res.status(400).json({ errors:{global:"there is no user with such email"}});
+        }
+
+    });
+  });
 
 export default router;

@@ -11,7 +11,7 @@ router.post("/", (req, res) => {
 const user = new User({email});
 
 user.setPassword(password);
-user.seConfirmationToken();
+user.setConfirmationToken();
 user.save()
 .then(userRecord => {
 sendConfirmationEmail(userRecord);

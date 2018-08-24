@@ -37,19 +37,34 @@ schema.methods.setPassword = function setPassword(password) {
     this.passwordHash = bcrypt.hashSync(password, 10);
   };
 
-  schema.methods.seConfirmationToken = function seConfirmationToken() {
-    this.ConfirmationToken =this.genarateJWT();
+  schema.methods.setConfirmationToken = function setConfirmationToken() {
+    this.confirmationToken =this.genarateJWT();
   };
 
   schema.methods.generateConfirmationUrl = function generateConfirmationUrl() {
-    return `${process.env.HOST}/confirmation/${this.ConfirmationToken}`;
+    return `${process.env.HOST}/confirmation/${this.confirmationToken}`;
   };
+
+  schema.methods.generateResetPasworddUrl= function generateResetPasworddUrl() {
+      return `${process.env.HOST}/reset_password/${this.generateResetPasswordToken()}`;
+  }
 
 schema.methods.genarateJWT = function genarateJWT() {
  return jwt.sign({
- email:this.email
+ email:this.email,
+confirmed: this.confirmed
  },process.env.JWT_SECRETKEY)
 };
+
+schema.methods.generateResetPasswordToken = function generateResetPasswordToken() {
+    return jwt.sign(
+      {
+        _id: this._id
+      },
+      process.env.JWT_SECRETKEY,
+      { expiresIn: "1h" }
+    );
+  };
 schema.methods.toAuthJSON = function toAuthJSON() {
      return{
     email: this.email,
