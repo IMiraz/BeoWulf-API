@@ -1,11 +1,11 @@
 import jwt from 'jsonwebtoken'
 
 export default(req, res, next) => {
-const header =req.header.authorization;
+const header =req.headers.authorization;
 
 let token;
 //bearerr
-if(header) token = header.split('')[1];
+if(header) token = header.split(" ")[1];
 
 if(token) {
 jwt.verify(token,process.env.JWT_SECRETKEY, (err, decoded)=> {
